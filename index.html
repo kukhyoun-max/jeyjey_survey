@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>제이제이 컨셉 설문</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0078AD; --blue-deep:#005F8A; --blue-soft:#E6F3F9; --plate:#CFE6F2; --on-blue:#FFFFFF;
+    --bg:#F4F6F8; --card:#FFFFFF; --text:#17212B; --sub:#5B6875; --line:#D5DCE3; --off:#C9D1D9; --danger:#C93A3A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --blue:#4FB6E3; --blue-deep:#8FD3F0; --blue-soft:#14313F; --plate:#2A5C74; --on-blue:#06202C;
+      --bg:#0F1419; --card:#182028; --text:#EAF0F5; --sub:#A3B0BC; --line:#36424D; --off:#36424D; --danger:#F08080;color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --blue:#4FB6E3; --blue-deep:#8FD3F0; --blue-soft:#14313F; --plate:#2A5C74; --on-blue:#06202C;
+    --bg:#0F1419; --card:#182028; --text:#EAF0F5; --sub:#A3B0BC; --line:#36424D; --off:#36424D; --danger:#F08080;color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); word-break:keep-all;}
+  .app{width:100%; max-width:440px; min-height:100dvh; margin:0 auto; background:var(--card); display:flex; flex-direction:column; padding-block:18px 24px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));}
+  .top{display:flex; align-items:center; gap:10px; min-height:40px; margin-bottom:14px;}
+  .top[hidden]{display:none;}
+  .back{width:40px; height:40px; flex:none; border:1.5px solid var(--line); border-radius:12px; background:var(--card); color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .track{flex:1; height:6px; border-radius:6px; background:var(--line); overflow:hidden;}
+  .fill{height:100%; width:0; background:var(--blue); transition:width .2s;}
+  .count{font-size:13px; color:var(--sub); min-width:42px; text-align:right; font-variant-numeric:tabular-nums;}
+  .notice{font-size:12.5px; color:var(--blue-deep); background:var(--blue-soft); border-radius:10px; padding:8px 12px; margin-bottom:12px;}
+  .stage{flex:1; display:flex; flex-direction:column;}
+  .eyebrow{font-size:13px; font-weight:700; color:var(--blue-deep); margin:4px 0 8px;}
+  h1{font-size:22px; line-height:1.4; font-weight:700; margin:0 0 8px;}
+  .hint{font-size:14px; line-height:1.55; color:var(--sub); margin:0 0 14px;}
+  .plate{background:var(--plate); border-radius:18px; display:flex; justify-content:center; padding:16px; margin:2px 0 16px;}
+  .plate img{height:min(26dvh,210px); width:auto; display:block;}
+  .opts{display:flex; flex-direction:column; gap:9px; margin-top:6px;}
+  .opts.two{display:grid; grid-template-columns:1fr 1fr;}
+  .opt{width:100%; min-height:52px; text-align:left; padding:12px 14px; border:1.5px solid var(--line); border-radius:14px; background:var(--card); color:var(--text); font:inherit; font-size:15.5px; font-weight:500; line-height:1.4; cursor:pointer; display:flex; align-items:center; gap:12px;}
+  @media (hover:hover){ .opt:not([disabled]):hover{border-color:var(--blue);} }
+  .plate.small{padding:10px; margin-bottom:10px;}
+  .plate.small img{height:112px;}
+  .opt:focus-visible,.primary:focus-visible,.ghost:focus-visible,.back:focus-visible{outline:3px solid var(--blue); outline-offset:2px;}
+  .opt[aria-pressed="true"]{background:var(--blue-soft); border-color:var(--blue); font-weight:700;}
+  .opt[disabled]{opacity:.45; cursor:default;}
+  .opt small{display:block; font-size:13px; font-weight:400; color:var(--sub); margin-top:2px; line-height:1.45;}
+  .opt .thumb{width:52px; height:52px; flex:none; border-radius:12px; background:var(--plate); display:flex; align-items:center; justify-content:center; padding:4px;}
+  .opt .thumb img{max-width:100%; max-height:100%; display:block;}
+  input[type=text],textarea{width:100%; font:inherit; font-size:16px; color:var(--text); background:var(--card); padding:13px 14px; border:1.5px solid var(--line); border-radius:14px; margin-top:10px;}
+  textarea{min-height:130px; resize:vertical; line-height:1.55; margin-top:2px;}
+  input:focus,textarea:focus{outline:none; border-color:var(--blue);}
+  .foot{margin-top:auto; padding-top:18px; display:flex; flex-direction:column; gap:8px;}
+  .primary{width:100%; height:54px; border:none; border-radius:14px; background:var(--blue); color:var(--on-blue); font:inherit; font-size:16px; font-weight:700; cursor:pointer;}
+  .primary:disabled{background:var(--off); color:var(--sub); cursor:default;}
+  .primary[hidden],.ghost[hidden]{display:none;}
+  .ghost{width:100%; height:48px; border:1.5px solid var(--line); border-radius:14px; background:var(--card); color:var(--text); font:inherit; font-size:15px; font-weight:500; cursor:pointer;}
+  .picked{font-size:13px; color:var(--sub); text-align:center;}
+  .info{list-style:none; margin:0 0 6px; padding:0; font-size:14.5px; line-height:1.6;}
+  .info li{padding:9px 0; border-top:1px solid var(--line);}
+  .info li:last-child{border-bottom:1px solid var(--line);}
+  .fine{font-size:12.5px; line-height:1.6; color:var(--sub); margin:6px 0 0;}
+  .err{font-size:14px; color:var(--danger); margin:0; text-align:center;}
+  .err:empty{display:none;}
+  .link{display:flex; align-items:center; justify-content:center; text-decoration:none;}
+  .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="top" id="top" hidden>
+    <button class="back" id="back" type="button" aria-label="이전 질문">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="stage" id="stage"></div>
+</main>
+<script>
+/* 배포할 때 Apps Script 웹앱 주소를 넣는다. 비어 있으면 미리보기(저장 안 함). */
+const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz-z5bNMBg8waFD-RbSXfX6o9M7W2LwEm3OI_-JtJEWGCOiKKncplXu8RLPG4p9ZxzyMA/exec';
+const VERSION = 'c1';
+const DONE_KEY = 'jeyjey_survey_done_' + VERSION;
+const TEST = new URLSearchParams(location.search).get('test') === '1';
+
+const IMG = { jey:'img/jeyjey.webp', jeyS:'img/jeyjey_s.webp', jate:'img/jate.webp', byeori:'img/byeori.webp' };
+const SCALE = [
+  { v:'계속 보고 싶음', l:'계속 보고 싶어요' },
+  { v:'한두 번은 재밌음', l:'한두 번은 재밌을 것 같아요' },
+  { v:'별로', l:'별로예요' },
+];
+
+const QUESTIONS = [
+  { k:'grade', sec:'먼저 간단히', t:'지금 어떤 상황이에요?', opts:['재학생 1학년','재학생 2학년','재학생 3학년','재학생 4학년','고등학생·수험생','그 외'], cols:2 },
+  { k:'reels', sec:'먼저 간단히', t:'인스타 릴스를 얼마나 자주 봐요?', opts:['거의 매일','일주일에 몇 번','거의 안 봐요'] },
+  { k:'follows', sec:'먼저 간단히', t:'캐릭터 계정을 팔로우해 본 적 있어요?', hint:'캐릭터가 주인공인 인스타 계정이요.', opts:['지금 팔로우하고 있어요','예전에 해 봤어요','해 본 적 없어요'] },
+
+  { k:'seen', sec:'첫인상', t:'이 캐릭터, 본 적 있어요?', img:IMG.jey, opts:['처음 봐요','본 적은 있는데 이름은 몰라요','이름까지 알아요'] },
+  { k:'animal', sec:'첫인상', t:'어떤 동물로 보여요?', img:IMG.jey, shuffle:true, cols:2,
+    opts:['곰','강아지','고양이','말','토끼','여우',{ v:'잘 모르겠음', l:'잘 모르겠어요', fixed:true },{ v:'기타', l:'다른 동물', other:'어떤 동물로 보여요?', fixed:true }] },
+  { k:'impression', sec:'첫인상', t:'첫인상에 가까운 말을 골라 주세요.', hint:'3개까지 고를 수 있어요.', img:IMG.jey, imgSmall:true, type:'multi', max:3, shuffle:true, cols:2,
+    opts:['귀여워요','순해 보여요','든든해요','똑똑해 보여요','웃겨요','어른스러워요','친근해요','유치해요','심심해요','어디서 본 것 같아요'] },
+  { k:'year', sec:'첫인상', t:'대학생이라면 몇 학년처럼 보여요?', img:IMG.jey, cols:2, opts:['1학년','2학년','3학년','4학년',{ v:'학생 같지 않음', l:'학생 같지는 않아요', wide:true }] },
+
+  { k:'personality', sec:'제이제이', t:'어떤 제이제이가 제일 보고 싶어요?', hint:'이 캐릭터는 전주대 4학년 선배 「제이제이」예요.', shuffle:true,
+    opts:[
+      { v:'전주대 진심 선배', l:'전주대에 너무 진심인 선배', d:'학교 얘기만 나오면 정색하고 진지해져요' },
+      { v:'다정한 상담 선배', l:'다정한 고민 상담 선배', d:'힘들 때 먼저 말 걸고 챙겨 줘요' },
+      { v:'허당 선배', l:'완벽한 척하는 허당 선배', d:'멋있는 척하다가 늘 망가져요' },
+      { v:'현실 4학년', l:'졸업 앞둔 현실 4학년', d:'과제와 취업 앞에서 같이 버티는 동지예요' },
+      { v:'끌리는 것 없음', l:'딱히 끌리는 게 없어요', fixed:true },
+    ] },
+  { k:'tone', sec:'제이제이', t:'제이제이 자막이라면 어떤 말투가 좋아요?', hint:'시험 전날 후배에게 하는 말이에요.', shuffle:true,
+    opts:[
+      { v:'반말', l:'「내일 시험이구나. 모르는 거 있으면 물어봐.」' },
+      { v:'해요체', l:'「내일 시험이네요. 모르는 거 있으면 물어봐요.」' },
+      { v:'공식체', l:'「내일 시험입니다. 모르는 것이 있으면 질문 바랍니다.」' },
+    ] },
+  { k:'call', sec:'제이제이', t:'제이제이가 우리를 뭐라고 부르면 좋아요?', shuffle:true,
+    opts:['후배','후배님','전주대생',{ v:'안 불러도 됨', l:'따로 안 불러도 돼요', fixed:true },{ v:'기타', l:'다른 말이 좋아요', other:'뭐라고 부르면 좋아요?', fixed:true }] },
+  { k:'gag', sec:'제이제이', t:'「곰 아니고 백마입니다」 설정, 어때요?', hint:'제이제이는 사실 백마예요. 다들 곰이나 강아지로 착각해서, 매번 「곰 아니고 백마입니다」라고 고쳐 줘요.', opts:SCALE },
+  { k:'eternal', sec:'제이제이', t:'「영원한 4학년」 설정, 어때요?', hint:'제이제이는 졸업하지 않아요. 학기가 끝날 때마다 「이번 학기도 졸업 못 함」으로 마무리돼요.', opts:SCALE },
+  { k:'cast', sec:'제이제이', t:'누구 이야기를 제일 보고 싶어요?',
+    opts:[
+      { v:'제이제이', l:'제이제이', d:'4학년 선배, 다정하고 진지해요', img:IMG.jeyS },
+      { v:'제이트', l:'제이트', d:'1학년 과대, 텐션이 높아요', img:IMG.jate },
+      { v:'별이', l:'별이', d:'2학년 감성파, 조용해요', img:IMG.byeori },
+      { v:'셋이 함께', l:'셋이 함께 나오는 이야기' },
+    ] },
+
+  { k:'concept', sec:'채널', t:'어떤 계정이면 팔로우하고 싶어요?', shuffle:true,
+    opts:[
+      { v:'캠퍼스 일기', l:'제이제이의 캠퍼스 일기', d:'시험, 학식, 도서관에서 겪는 일을 회차로 이어 가요' },
+      { v:'밈 채널', l:'전주대판 밈 채널', d:'요즘 유행하는 밈을 전주대 상황으로 바꿔요' },
+      { v:'꿀팁', l:'선배의 전주대 꿀팁', d:'장학금, 시설, 학사 일정을 쉽게 알려 줘요' },
+      { v:'속마음', l:'전주대생 속마음 대변인', d:'다들 생각했지만 말 못 한 속마음을 자막으로 말해요' },
+      { v:'안 볼 것', l:'어떤 컨셉이든 안 볼 것 같아요', fixed:true },
+    ] },
+  { k:'topics', sec:'채널', t:'어떤 소재가 보고 싶어요?', hint:'3개까지 고를 수 있어요.', type:'multi', max:3, shuffle:true, cols:2,
+    opts:['시험기간','수강신청','과제·팀플','학식','도서관 자리 전쟁','통학·기숙사','축제·학교 행사','장학금·혜택 직접 써 보기','잘 모르는 학교 명소','취업·졸업 고민','유행 밈 따라 하기','세 캐릭터의 티격태격'] },
+  { k:'series', sec:'채널', t:'이어지는 연재물을 챙겨 볼 것 같아요?',
+    opts:[
+      { v:'챙겨 봄', l:'재밌으면 다음 편을 찾아볼 것 같아요' },
+      { v:'보이면 봄', l:'피드에 뜨면 보는 정도일 것 같아요' },
+      { v:'한 편 완결 선호', l:'한 편으로 끝나는 게 좋아요' },
+    ] },
+  { k:'share', sec:'채널', t:'캐릭터 영상을 친구에게 보낸다면, 가장 큰 이유는 뭘까요?', shuffle:true,
+    opts:['내 얘기 같아서','친구가 떠올라서','너무 웃겨서','캐릭터가 귀여워서','꿀팁이 유용해서',{ v:'잘 안 보냄', l:'친구에게 잘 안 보내는 편이에요', fixed:true }] },
+  { k:'dislike', sec:'채널', t:'이럴 때 보기 싫어질 것 같아요.', hint:'3개까지 고를 수 있어요.', type:'multi', max:3, shuffle:true,
+    opts:['학교 홍보처럼 보일 때','공지를 그대로 올릴 때','억지로 밈을 따라 할 때','너무 유치할 때','너무 자주 올라올 때','AI로 만든 티가 날 때',{ v:'특별히 없음', l:'특별히 없어요', none:true, fixed:true }] },
+  { k:'ai', sec:'채널', t:'제이제이 영상을 AI로 만든다면 어떻게 느껴져요?',
+    opts:[
+      { v:'재밌으면 상관없음', l:'재밌으면 상관없어요' },
+      { v:'밝히면 괜찮음', l:'AI로 만들었다고 밝히면 괜찮아요' },
+      { v:'손이 덜 감', l:'AI 영상이면 손이 덜 가요' },
+      { v:'잘 모르겠음', l:'잘 모르겠어요' },
+    ] },
+  { k:'follow', sec:'채널', t:'전주대 캐릭터 계정이 있다면 팔로우할 것 같아요?',
+    opts:[
+      { v:'바로', l:'바로 할 것 같아요' },
+      { v:'보고 결정', l:'영상 몇 개 보고 재밌으면 할게요' },
+      { v:'안 함', l:'안 할 것 같아요' },
+    ] },
+  { k:'idea', sec:'마지막', t:'제이제이가 꼭 겪었으면 하는 전주대 상황이 있어요?', hint:'다른 사람 이름이나 연락처는 적지 말아 주세요.', type:'text', optional:true, max:300 },
+];
+
+/* 보기 순서: 사람마다 섞되 한 번 섞으면 유지한다. fixed 보기는 맨 뒤에 둔다. */
+function shuffled(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+QUESTIONS.forEach(q => {
+  if (!q.opts) return;
+  q.opts = q.opts.map(o => typeof o === 'string' ? { v:o, l:o } : o);
+  if (q.shuffle) q.opts = shuffled(q.opts.filter(o => !o.fixed)).concat(q.opts.filter(o => o.fixed));
+});
+
+const answers = {};
+const others = {};
+let idx = -1;
+const stage = document.getElementById('stage');
+const topBar = document.getElementById('top');
+
+function storageGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+function storageSet(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+
+function el(tag, cls, text){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function renderIntro(){
+  topBar.hidden = true;
+  stage.textContent = '';
+  if (!ENDPOINT_URL) stage.append(el('div', 'notice', '미리보기입니다. 끝까지 눌러 볼 수 있지만 답은 저장되지 않아요.'));
+  stage.append(el('h1', '', '전주대 캐릭터 계정, 어떻게 만들면 좋을까요?'));
+  stage.append(el('p', 'hint', '여러분 의견을 듣고 싶어요. 정답은 없으니 느낌대로 골라 주세요.'));
+  const ul = el('ul', 'info');
+  ['약 3분, 질문 ' + QUESTIONS.length + '개예요', '이름·학번·연락처를 묻지 않는 익명 설문이에요', '답은 통계로만 계정 기획에 써요'].forEach(t => ul.append(el('li', '', t)));
+  stage.append(ul);
+  const foot = el('div', 'foot');
+  const go = el('button', 'primary', '시작하기'); go.type = 'button';
+  go.onclick = () => show(0);
+  foot.append(go, el('p', 'fine', '전주대학교 대외협력홍보실이 진행해요. 응답은 Google 시트에 저장되고, 정리할 때 AI 도구(Claude)를 쓸 수 있어요. 참여하지 않거나 중간에 그만둬도 불이익이 없어요.'));
+  stage.append(foot);
+}
+
+function renderAlready(){
+  topBar.hidden = true;
+  stage.textContent = '';
+  stage.append(el('h1', '', '이미 참여해 주셨어요.'), el('p', 'hint', '고마워요. 이 기기에서는 한 번만 답할 수 있어요.'));
+}
+
+function show(i){
+  idx = i;
+  topBar.hidden = false;
+  document.getElementById('fill').style.width = ((i + 1) / QUESTIONS.length * 100) + '%';
+  document.getElementById('count').textContent = (i + 1) + ' / ' + QUESTIONS.length;
+  renderQ(QUESTIONS[i]);
+  window.scrollTo(0, 0);
+}
+
+function next(){
+  if (idx + 1 < QUESTIONS.length) show(idx + 1);
+  else submit();
+}
+
+function renderQ(q){
+  stage.textContent = '';
+  stage.append(el('div', 'eyebrow', q.sec), el('h1', '', q.t));
+  if (q.hint) stage.append(el('p', 'hint', q.hint));
+  if (q.img) {
+    const plate = el('div', q.imgSmall ? 'plate small' : 'plate');
+    const im = el('img'); im.src = q.img; im.alt = '질문에 나온 캐릭터';
+    plate.append(im);
+    stage.append(plate);
+  }
+  if (q.type === 'text') return renderText(q);
+  if (q.type === 'multi') return renderMulti(q);
+  return renderSingle(q);
+}
+
+function optButton(o){
+  const b = el('button', 'opt'); b.type = 'button';
+  if (o.img) {
+    const t = el('span', 'thumb'); const im = el('img'); im.src = o.img; im.alt = ''; t.append(im); b.append(t);
+  }
+  const box = el('span');
+  box.append(document.createTextNode(o.l));
+  if (o.d) box.append(el('small', '', o.d));
+  b.append(box);
+  if (o.wide) b.style.gridColumn = '1 / -1';
+  return b;
+}
+
+function renderSingle(q){
+  const wrap = el('div', 'opts' + (q.cols === 2 ? ' two' : ''));
+  const otherBox = el('div');
+  const buttons = [];
+  q.opts.forEach(o => {
+    const b = optButton(o);
+    b.setAttribute('aria-pressed', answers[q.k] === o.v ? 'true' : 'false');
+    b.onclick = () => {
+      answers[q.k] = o.v;
+      buttons.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      if (o.other) return showOther();
+      delete others[q.k];
+      otherBox.textContent = '';
+      setTimeout(next, 170);
+    };
+    buttons.push(b);
+    wrap.append(b);
+  });
+  stage.append(wrap, otherBox);
+  function showOther(){
+    const o = q.opts.find(x => x.other);
+    otherBox.textContent = '';
+    const inp = el('input'); inp.type = 'text'; inp.maxLength = 30; inp.placeholder = o.other; inp.value = others[q.k] || '';
+    const foot = el('div', 'foot');
+    const go = el('button', 'primary', '다음'); go.type = 'button';
+    const sync = () => { go.disabled = !inp.value.trim(); };
+    inp.oninput = sync; sync();
+    go.onclick = () => { others[q.k] = inp.value.trim(); next(); };
+    foot.append(go);
+    otherBox.append(inp, foot);
+    inp.focus();
+  }
+  const cur = q.opts.find(o => o.v === answers[q.k]);
+  if (cur && cur.other) showOther();
+}
+
+function renderMulti(q){
+  const picked = new Set(Array.isArray(answers[q.k]) ? answers[q.k] : []);
+  const wrap = el('div', 'opts' + (q.cols === 2 ? ' two' : ''));
+  const buttons = new Map();
+  const none = q.opts.find(o => o.none);
+  q.opts.forEach(o => {
+    const b = optButton(o);
+    b.onclick = () => {
+      if (picked.has(o.v)) picked.delete(o.v);
+      else {
+        if (o.none) picked.clear();
+        else if (none) picked.delete(none.v);
+        picked.add(o.v);
+      }
+      paint();
+    };
+    buttons.set(o, b);
+    wrap.append(b);
+  });
+  stage.append(wrap);
+  const foot = el('div', 'foot');
+  const note = el('div', 'picked');
+  const go = el('button', 'primary', '다음'); go.type = 'button';
+  go.onclick = () => { answers[q.k] = Array.from(picked); next(); };
+  foot.append(note, go);
+  stage.append(foot);
+  function paint(){
+    const full = picked.size >= q.max;
+    buttons.forEach((b, o) => {
+      const on = picked.has(o.v);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.disabled = full && !on && !o.none;
+    });
+    note.textContent = picked.size + '개 골랐어요 (최대 ' + q.max + '개)';
+    go.disabled = picked.size === 0;
+  }
+  paint();
+}
+
+function renderText(q){
+  const ta = el('textarea'); ta.maxLength = q.max; ta.value = answers[q.k] || ''; ta.placeholder = '없으면 건너뛰어도 돼요';
+  ta.setAttribute('aria-label', q.t);
+  const foot = el('div', 'foot');
+  const err = el('p', 'err'); err.id = 'err';
+  const go = el('button', 'primary', '제출하기'); go.type = 'button'; go.id = 'send';
+  const skip = el('button', 'ghost', '건너뛰고 제출하기'); skip.type = 'button'; skip.id = 'skip';
+  const sync = () => { const v = ta.value.trim(); go.hidden = !v; skip.hidden = !!v; };
+  ta.oninput = sync; sync();
+  go.onclick = () => { answers[q.k] = ta.value.trim(); next(); };
+  skip.onclick = () => { answers[q.k] = ''; next(); };
+  const hp = el('input', 'hp'); hp.type = 'text'; hp.id = 'hp'; hp.tabIndex = -1; hp.autocomplete = 'off'; hp.setAttribute('aria-hidden', 'true');
+  foot.append(err, go, skip);
+  stage.append(ta, hp, foot);
+}
+
+function rid(){
+  let r = storageGet('jeyjey_survey_rid');
+  if (!r) { r = Math.random().toString(36).slice(2, 12); storageSet('jeyjey_survey_rid', r); }
+  return r;
+}
+
+function payload(){
+  const out = {};
+  QUESTIONS.forEach(q => {
+    let v = answers[q.k];
+    if (Array.isArray(v)) v = v.join(' | ');
+    if (others[q.k]) v = '기타: ' + others[q.k];
+    out[q.k] = v == null ? '' : v;
+  });
+  const hp = document.getElementById('hp');
+  return { v:VERSION, rid:rid(), test:TEST, hp:hp ? hp.value : '', answers:out };
+}
+
+let sending = false;
+function submit(){
+  if (sending) return;
+  const body = payload();
+  if (!ENDPOINT_URL) return renderDone();
+  sending = true;
+  const go = document.getElementById('send'), skip = document.getElementById('skip'), err = document.getElementById('err');
+  const fail = msg => {
+    sending = false;
+    if (err) err.textContent = msg;
+    [go, skip].forEach(b => { if (b) b.disabled = false; });
+  };
+  [go, skip].forEach(b => { if (b) b.disabled = true; });
+  if (err) err.textContent = '보내는 중이에요…';
+  fetch(ENDPOINT_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify(body) })
+    .then(r => r.json())
+    .then(res => {
+      if (res.ok) { sending = false; if (!TEST) storageSet(DONE_KEY, '1'); return renderDone(); }
+      fail(res.error === 'closed' ? '설문이 마감되었어요. 참여해 주셔서 고마워요.' : '저장하지 못했어요. 다시 눌러 주세요.');
+    })
+    .catch(() => fail('연결이 불안정해요. 답은 그대로 있으니 다시 눌러 주세요.'));
+}
+
+function renderDone(){
+  topBar.hidden = true;
+  stage.textContent = '';
+  const plate = el('div', 'plate');
+  const im = el('img'); im.src = IMG.jey; im.alt = '제이제이';
+  plate.append(im);
+  stage.append(plate, el('h1', '', '고마워요. 잘 반영할게요.'), el('p', 'hint', '아, 그리고 곰 아니고 백마입니다.'));
+  const foot = el('div', 'foot');
+  const a = el('a', 'primary link', '@jeyjey.jju 둘러보기');
+  a.href = 'https://www.instagram.com/jeyjey.jju/'; a.target = '_blank'; a.rel = 'noopener';
+  foot.append(a);
+  stage.append(foot);
+}
+
+document.getElementById('back').onclick = () => { if (idx > 0) show(idx - 1); else { idx = -1; renderIntro(); } };
+
+if (!TEST && ENDPOINT_URL && storageGet(DONE_KEY)) renderAlready();
+else renderIntro();
+</script>
+</body>
+</html>
