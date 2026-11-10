@@ -66,12 +66,6 @@
   .cover .hint{font-family:'Gothic A1',sans-serif; font-weight:700; font-size:16px; color:var(--text);}
   .cover .info{font-family:'Gothic A1',sans-serif; font-weight:500;}
   .cover .primary{font-family:'Black Han Sans','Gothic A1',sans-serif; font-weight:400; font-size:20px;}
-  /* 문항 하단 줄다리기: 넘어갈수록 왼쪽(별이·제이트)에서 오른쪽(제이제이)으로 움직인다 */
-  .tug{position:fixed; z-index:0; left:50%; bottom:0; transform:translateX(-50%); width:min(100vw,640px); overflow:hidden; pointer-events:none;}
-  .tug[hidden]{display:none;}
-  .tug img{display:block; height:100%; width:auto; max-width:none; transition:transform .45s ease;}
-  @media (min-width:641px){ .tug{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);} }
-  @media (prefers-reduced-motion:reduce){ .tug img{transition:none;} }
   /* 보내는 중 화면(수퍼스타 만들기 앱 로딩과 같음): 응답이 빠르면 보이지 않게 0.3초 뒤에 나온다 */
   .ld{--u:calc(min(100vw,520px) * .8 / 100); position:fixed; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#a9cefa,#abd1fd); animation:ld-in .15s .3s both;}
   @keyframes ld-in{from{opacity:0} to{opacity:1}}
@@ -89,7 +83,6 @@
 </head>
 <body>
 <img class="char" id="char" alt="" hidden>
-<div class="tug" id="tug" hidden><img id="tugImg" alt=""></div>
 <main class="app">
   <div class="top" id="top" hidden>
     <button class="back" id="back" type="button" aria-label="이전 질문">
@@ -108,7 +101,7 @@ const DONE_KEY = 'jeyjey_survey_done_' + VERSION;
 const TEST = new URLSearchParams(location.search).get('test') === '1';
 
 const IMG = { jey:'img/jeyjey.webp', jeyS:'img/jeyjey_s.webp', jate:'img/jate.webp', byeori:'img/byeori.webp',
-  magnifier:'img/jey_magnifier.webp', tug:'img/tug.webp', loadJj:'img/load-jj.webp', loadText:'img/load-text.webp' };
+  magnifier:'img/jey_magnifier.webp', loadJj:'img/load-jj.webp', loadText:'img/load-text.webp' };
 const SCALE = [
   { v:'계속 보고 싶음', l:'계속 보고 싶어요' },
   { v:'한두 번은 재밌음', l:'한두 번은 재밌을 것 같아요' },
@@ -209,47 +202,18 @@ let idx = -1;
 const stage = document.getElementById('stage');
 const topBar = document.getElementById('top');
 
-/* 내용 아래 남은 공간을 채운다(팀 지침 설문과 같은 방식). 표지·끝 화면은 돋보기 제이제이, 문항은 줄다리기. 공간이 좁으면 숨긴다. */
+/* 표지·끝 화면에서 돋보기 제이제이가 내용 아래 남은 공간을 채운다(팀 지침 설문과 같은 방식). 공간이 좁으면 숨긴다. 문항 화면에는 그림을 두지 않는다. */
 const charEl = document.getElementById('char');
-const tugEl = document.getElementById('tug'), tugImg = document.getElementById('tugImg');
 const CHAR_RATIO = 840 / 768; // 돋보기 이미지 세로 ÷ 가로
-const TUG_WIDE = 3; // 줄다리기 이미지 가로 ÷ 세로
-let tugAt = -1; // 문항 진행도 0~1, -1이면 돋보기 제이제이
-/* 키보드가 올라와 화면이 줄어도 크기가 변하지 않도록 같은 폭에서 가장 큰 높이를 쓴다 */
-let seenWidth = 0, seenHeight = 0;
-function fullHeight(){
-  if (window.innerWidth !== seenWidth) { seenWidth = window.innerWidth; seenHeight = 0; }
-  seenHeight = Math.max(seenHeight, window.innerHeight);
-  return seenHeight;
-}
+let charOn = false;
 function fitChar(){
   const room = window.innerHeight - stage.getBoundingClientRect().bottom - 12;
-  const hide = room < 110;
-  charEl.hidden = hide || tugAt >= 0;
-  tugEl.hidden = hide || tugAt < 0;
-  if (tugAt < 0) {
-    charEl.style.height = Math.min(room, window.innerWidth * 0.92 * CHAR_RATIO, 560) + 'px';
-    return;
-  }
-  if (hide) return;
-  /* 크기는 화면 크기로만 정한다. 내용이 길면 줄이지 않고 아래로 내려 발끝을 가린다. */
-  const view = tugEl.clientWidth;
-  const height = Math.min(view * 0.775, fullHeight() * 0.36);
-  const width = height * TUG_WIDE;
-  tugEl.style.height = height + 'px';
-  tugEl.style.bottom = Math.min(0, room - height) + 'px';
-  const focus = 0.25 + (0.82 - 0.25) * tugAt; // 화면 가운데에 올 이미지 위치
-  const x = Math.max(view - width, Math.min(0, view / 2 - focus * width));
-  tugImg.style.transform = 'translateX(' + x + 'px)';
+  charEl.hidden = !charOn || room < 110;
+  if (!charEl.hidden) charEl.style.height = Math.min(room, window.innerWidth * 0.92 * CHAR_RATIO, 560) + 'px';
 }
-function setChar(){
-  tugAt = -1;
-  if (!charEl.getAttribute('src')) charEl.src = IMG.magnifier;
-  requestAnimationFrame(fitChar);
-}
-function setTug(progress){
-  tugAt = progress;
-  if (!tugImg.getAttribute('src')) tugImg.src = IMG.tug;
+function setChar(on){
+  charOn = on !== false;
+  if (charOn && !charEl.getAttribute('src')) charEl.src = IMG.magnifier;
   requestAnimationFrame(fitChar);
 }
 
@@ -333,7 +297,7 @@ function renderAlready(){
 function show(i){
   idx = i;
   stage.classList.remove('cover');
-  setTug(i / (QUESTIONS.length - 1));
+  setChar(false);
   topBar.hidden = false;
   document.getElementById('fill').style.width = ((i + 1) / QUESTIONS.length * 100) + '%';
   document.getElementById('count').textContent = (i + 1) + ' / ' + QUESTIONS.length;
