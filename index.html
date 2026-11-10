@@ -5,26 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
 <title>제이제이 컨셉 설문</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* 색·표지 글꼴은 팀 지침 설문, 수퍼스타 만들기 앱과 같다. 캐릭터 이미지가 밝은 하늘색 바탕용이라 다크 모드는 두지 않는다. */
   :root{
-    --blue:#0078AD; --blue-deep:#005F8A; --blue-soft:#E6F3F9; --plate:#CFE6F2; --on-blue:#FFFFFF;
-    --bg:#F4F6F8; --card:#FFFFFF; --text:#17212B; --sub:#5B6875; --line:#D5DCE3; --off:#C9D1D9; --danger:#C93A3A;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --blue:#4FB6E3; --blue-deep:#8FD3F0; --blue-soft:#14313F; --plate:#2A5C74; --on-blue:#06202C;
-      --bg:#0F1419; --card:#182028; --text:#EAF0F5; --sub:#A3B0BC; --line:#36424D; --off:#36424D; --danger:#F08080;color-scheme:dark;
-    }
-  }
-  :root[data-theme="dark"]{
-    --blue:#4FB6E3; --blue-deep:#8FD3F0; --blue-soft:#14313F; --plate:#2A5C74; --on-blue:#06202C;
-    --bg:#0F1419; --card:#182028; --text:#EAF0F5; --sub:#A3B0BC; --line:#36424D; --off:#36424D; --danger:#F08080;color-scheme:dark;
+    --blue:#2F6FDC; --blue-deep:#1F55B5; --blue-soft:#E6F3F9; --plate:#FFFFFF; --on-blue:#FFFFFF;
+    --bg:#D3E8F3; --card:#FFFFFF; --text:#17212B; --sub:#3F4C59; --line:#B9D3E1; --off:#C9D1D9; --danger:#C93A3A;
   }
   *{box-sizing:border-box;}
   html,body{margin:0; padding:0;}
   body{font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); word-break:keep-all;}
-  .app{width:100%; max-width:440px; min-height:100dvh; margin:0 auto; background:var(--card); display:flex; flex-direction:column; padding-block:18px 24px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));}
+  .app{position:relative; z-index:1; width:100%; max-width:440px; min-height:100dvh; margin:0 auto; display:flex; flex-direction:column; padding-block:18px 24px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));}
   .top{display:flex; align-items:center; gap:10px; min-height:40px; margin-bottom:14px;}
   .top[hidden]{display:none;}
   .back{width:40px; height:40px; flex:none; border:1.5px solid var(--line); border-radius:12px; background:var(--card); color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center;}
@@ -32,7 +23,7 @@
   .fill{height:100%; width:0; background:var(--blue); transition:width .2s;}
   .count{font-size:13px; color:var(--sub); min-width:42px; text-align:right; font-variant-numeric:tabular-nums;}
   .notice{font-size:12.5px; color:var(--blue-deep); background:var(--blue-soft); border-radius:10px; padding:8px 12px; margin-bottom:12px;}
-  .stage{flex:1; display:flex; flex-direction:column;}
+  .stage{display:flex; flex-direction:column;}
   .eyebrow{font-size:13px; font-weight:700; color:var(--blue-deep); margin:4px 0 8px;}
   h1{font-size:22px; line-height:1.4; font-weight:700; margin:0 0 8px;}
   .hint{font-size:14px; line-height:1.55; color:var(--sub); margin:0 0 14px;}
@@ -53,7 +44,7 @@
   input[type=text],textarea{width:100%; font:inherit; font-size:16px; color:var(--text); background:var(--card); padding:13px 14px; border:1.5px solid var(--line); border-radius:14px; margin-top:10px;}
   textarea{min-height:130px; resize:vertical; line-height:1.55; margin-top:2px;}
   input:focus,textarea:focus{outline:none; border-color:var(--blue);}
-  .foot{margin-top:auto; padding-top:18px; display:flex; flex-direction:column; gap:8px;}
+  .foot{padding-top:18px; display:flex; flex-direction:column; gap:8px;}
   .primary{width:100%; height:54px; border:none; border-radius:14px; background:var(--blue); color:var(--on-blue); font:inherit; font-size:16px; font-weight:700; cursor:pointer;}
   .primary:disabled{background:var(--off); color:var(--sub); cursor:default;}
   .primary[hidden],.ghost[hidden]{display:none;}
@@ -67,9 +58,38 @@
   .err:empty{display:none;}
   .link{display:flex; align-items:center; justify-content:center; text-decoration:none;}
   .hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0;}
+  /* 표지·끝 화면: 돋보기 든 제이제이가 내용 아래 남은 공간을 채운다 */
+  .char{position:fixed; z-index:0; left:50%; bottom:0; width:auto; transform:translateX(-50%); pointer-events:none;}
+  .char[hidden]{display:none;}
+  .cover h1{font-family:'Black Han Sans','Gothic A1',sans-serif; font-weight:400; font-size:clamp(30px,8.6vw,38px); line-height:1.2; margin:6px 0 12px;}
+  .cover h1 span{color:var(--blue-deep);}
+  .cover .hint{font-family:'Gothic A1',sans-serif; font-weight:700; font-size:16px; color:var(--text);}
+  .cover .info{font-family:'Gothic A1',sans-serif; font-weight:500;}
+  .cover .primary{font-family:'Black Han Sans','Gothic A1',sans-serif; font-weight:400; font-size:20px;}
+  /* 문항 하단 줄다리기: 넘어갈수록 왼쪽(별이·제이트)에서 오른쪽(제이제이)으로 움직인다 */
+  .tug{position:fixed; z-index:0; left:50%; bottom:0; transform:translateX(-50%); width:min(100vw,640px); overflow:hidden; pointer-events:none;}
+  .tug[hidden]{display:none;}
+  .tug img{display:block; height:100%; width:auto; max-width:none; transition:transform .45s ease;}
+  @media (min-width:641px){ .tug{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);} }
+  @media (prefers-reduced-motion:reduce){ .tug img{transition:none;} }
+  /* 보내는 중 화면(수퍼스타 만들기 앱 로딩과 같음): 응답이 빠르면 보이지 않게 0.3초 뒤에 나온다 */
+  .ld{--u:calc(min(100vw,520px) * .8 / 100); position:fixed; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#a9cefa,#abd1fd); animation:ld-in .15s .3s both;}
+  @keyframes ld-in{from{opacity:0} to{opacity:1}}
+  .ld-art{position:relative; width:calc(var(--u) * 100); height:calc(var(--u) * 92);}
+  .ld-art::after{content:""; position:absolute; left:4%; right:6%; top:calc(var(--u) * 83); height:calc(var(--u) * 4); border-radius:50%; background:rgba(47,90,170,.22); filter:blur(calc(var(--u) * 1));}
+  .ld svg{position:absolute; inset:0; width:100%; height:100%; z-index:1; overflow:visible;}
+  .ld .bar{fill:rgba(255,255,255,.28); stroke:#fff; stroke-width:1.1;}
+  .ld .bar-in{fill:#4398fd;}
+  .ld .rope{stroke:#fbfdff; stroke-width:.55; stroke-linecap:round;}
+  .ld .knob{fill:#fff;}
+  .ld img{position:absolute; display:block;}
+  .ld .word{left:calc(var(--u) * 8); top:calc(var(--u) * 37.5); width:calc(var(--u) * 33); z-index:1;}
+  .ld .jj{left:calc(var(--u) * 46); top:calc(var(--u) * 15.5); width:calc(var(--u) * 50); z-index:2; transform-origin:45% 100%;}
 </style>
 </head>
 <body>
+<img class="char" id="char" alt="" hidden>
+<div class="tug" id="tug" hidden><img id="tugImg" alt=""></div>
 <main class="app">
   <div class="top" id="top" hidden>
     <button class="back" id="back" type="button" aria-label="이전 질문">
@@ -83,11 +103,12 @@
 <script>
 /* 배포할 때 Apps Script 웹앱 주소를 넣는다. 비어 있으면 미리보기(저장 안 함). */
 const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz-z5bNMBg8waFD-RbSXfX6o9M7W2LwEm3OI_-JtJEWGCOiKKncplXu8RLPG4p9ZxzyMA/exec';
-const VERSION = 'c1';
+const VERSION = 'c2';
 const DONE_KEY = 'jeyjey_survey_done_' + VERSION;
 const TEST = new URLSearchParams(location.search).get('test') === '1';
 
-const IMG = { jey:'img/jeyjey.webp', jeyS:'img/jeyjey_s.webp', jate:'img/jate.webp', byeori:'img/byeori.webp' };
+const IMG = { jey:'img/jeyjey.webp', jeyS:'img/jeyjey_s.webp', jate:'img/jate.webp', byeori:'img/byeori.webp',
+  magnifier:'img/jey_magnifier.webp', tug:'img/tug.webp', loadJj:'img/load-jj.webp', loadText:'img/load-text.webp' };
 const SCALE = [
   { v:'계속 보고 싶음', l:'계속 보고 싶어요' },
   { v:'한두 번은 재밌음', l:'한두 번은 재밌을 것 같아요' },
@@ -104,14 +125,13 @@ const QUESTIONS = [
     opts:['곰','강아지','고양이','말','토끼','여우',{ v:'잘 모르겠음', l:'잘 모르겠어요', fixed:true },{ v:'기타', l:'다른 동물', other:'어떤 동물로 보여요?', fixed:true }] },
   { k:'impression', sec:'첫인상', t:'첫인상에 가까운 말을 골라 주세요.', hint:'3개까지 고를 수 있어요.', img:IMG.jey, imgSmall:true, type:'multi', max:3, shuffle:true, cols:2,
     opts:['귀여워요','순해 보여요','든든해요','똑똑해 보여요','웃겨요','어른스러워요','친근해요','유치해요','심심해요','어디서 본 것 같아요'] },
-  { k:'year', sec:'첫인상', t:'대학생이라면 몇 학년처럼 보여요?', img:IMG.jey, cols:2, opts:['1학년','2학년','3학년','4학년',{ v:'학생 같지 않음', l:'학생 같지는 않아요', wide:true }] },
 
   { k:'personality', sec:'제이제이', t:'어떤 제이제이가 제일 보고 싶어요?', hint:'이 캐릭터는 전주대 4학년 선배 「제이제이」예요.', shuffle:true,
     opts:[
       { v:'전주대 진심 선배', l:'전주대에 너무 진심인 선배', d:'학교 얘기만 나오면 정색하고 진지해져요' },
       { v:'다정한 상담 선배', l:'다정한 고민 상담 선배', d:'힘들 때 먼저 말 걸고 챙겨 줘요' },
       { v:'허당 선배', l:'완벽한 척하는 허당 선배', d:'멋있는 척하다가 늘 망가져요' },
-      { v:'현실 4학년', l:'졸업 앞둔 현실 4학년', d:'과제와 취업 앞에서 같이 버티는 동지예요' },
+      { v:'현실 공감 선배', l:'현실 공감 선배', d:'과제와 시험 앞에서 같이 버티는 동지예요' },
       { v:'끌리는 것 없음', l:'딱히 끌리는 게 없어요', fixed:true },
     ] },
   { k:'tone', sec:'제이제이', t:'제이제이 자막이라면 어떤 말투가 좋아요?', hint:'시험 전날 후배에게 하는 말이에요.', shuffle:true,
@@ -124,6 +144,8 @@ const QUESTIONS = [
     opts:['후배','후배님','전주대생',{ v:'안 불러도 됨', l:'따로 안 불러도 돼요', fixed:true },{ v:'기타', l:'다른 말이 좋아요', other:'뭐라고 부르면 좋아요?', fixed:true }] },
   { k:'gag', sec:'제이제이', t:'「곰 아니고 백마입니다」 설정, 어때요?', hint:'제이제이는 사실 백마예요. 다들 곰이나 강아지로 착각해서, 매번 「곰 아니고 백마입니다」라고 고쳐 줘요.', opts:SCALE },
   { k:'eternal', sec:'제이제이', t:'「영원한 4학년」 설정, 어때요?', hint:'제이제이는 졸업하지 않아요. 학기가 끝날 때마다 「이번 학기도 졸업 못 함」으로 마무리돼요.', opts:SCALE },
+  { k:'room', sec:'제이제이', t:'밤 장면에서 제이제이가 쉬는 방, 어디가 어울려요?', shuffle:true,
+    opts:['기숙사','자취방',{ v:'잘 모르겠음', l:'잘 모르겠어요', fixed:true }] },
   { k:'cast', sec:'제이제이', t:'누구 이야기를 제일 보고 싶어요?',
     opts:[
       { v:'제이제이', l:'제이제이', d:'4학년 선배, 다정하고 진지해요', img:IMG.jeyS },
@@ -186,6 +208,89 @@ let idx = -1;
 const stage = document.getElementById('stage');
 const topBar = document.getElementById('top');
 
+/* 내용 아래 남은 공간을 채운다(팀 지침 설문과 같은 방식). 표지·끝 화면은 돋보기 제이제이, 문항은 줄다리기. 공간이 좁으면 숨긴다. */
+const charEl = document.getElementById('char');
+const tugEl = document.getElementById('tug'), tugImg = document.getElementById('tugImg');
+const CHAR_RATIO = 840 / 768; // 돋보기 이미지 세로 ÷ 가로
+const TUG_WIDE = 3; // 줄다리기 이미지 가로 ÷ 세로
+let tugAt = -1; // 문항 진행도 0~1, -1이면 돋보기 제이제이
+/* 키보드가 올라와 화면이 줄어도 크기가 변하지 않도록 같은 폭에서 가장 큰 높이를 쓴다 */
+let seenWidth = 0, seenHeight = 0;
+function fullHeight(){
+  if (window.innerWidth !== seenWidth) { seenWidth = window.innerWidth; seenHeight = 0; }
+  seenHeight = Math.max(seenHeight, window.innerHeight);
+  return seenHeight;
+}
+function fitChar(){
+  const room = window.innerHeight - stage.getBoundingClientRect().bottom - 12;
+  const hide = room < 110;
+  charEl.hidden = hide || tugAt >= 0;
+  tugEl.hidden = hide || tugAt < 0;
+  if (tugAt < 0) {
+    charEl.style.height = Math.min(room, window.innerWidth * 0.92 * CHAR_RATIO, 560) + 'px';
+    return;
+  }
+  if (hide) return;
+  /* 크기는 화면 크기로만 정한다. 내용이 길면 줄이지 않고 아래로 내려 발끝을 가린다. */
+  const view = tugEl.clientWidth;
+  const height = Math.min(view * 0.775, fullHeight() * 0.36);
+  const width = height * TUG_WIDE;
+  tugEl.style.height = height + 'px';
+  tugEl.style.bottom = Math.min(0, room - height) + 'px';
+  const focus = 0.25 + (0.82 - 0.25) * tugAt; // 화면 가운데에 올 이미지 위치
+  const x = Math.max(view - width, Math.min(0, view / 2 - focus * width));
+  tugImg.style.transform = 'translateX(' + x + 'px)';
+}
+function setChar(){
+  tugAt = -1;
+  if (!charEl.getAttribute('src')) charEl.src = IMG.magnifier;
+  requestAnimationFrame(fitChar);
+}
+function setTug(progress){
+  tugAt = progress;
+  if (!tugImg.getAttribute('src')) tugImg.src = IMG.tug;
+  requestAnimationFrame(fitChar);
+}
+
+/* 보내는 중 화면: 제이제이가 줄을 당겨 막대를 채운다(수퍼스타 만들기 앱 loaderNode와 같음). 그림 단위는 viewBox 100 x 92. */
+[IMG.loadJj, IMG.loadText].forEach(src => { new Image().src = src; }); // 처음 나올 때 빈 화면이 되지 않게 미리 받는다.
+const LOAD_CYCLE_MS = 1800;
+const LOAD_BAR_WIDTH = 36.6;
+const LOAD_TILT_DEG = 2.5;
+const LOAD_HAND = { x:48.6, y:61.4 }; // 손의 위치(줄 끝)
+const LOAD_PIVOT = { x:68.5, y:85.2 }; // 몸이 기우는 중심(발)
+function loaderNode(){
+  const art = el('div', 'ld-art');
+  art.innerHTML = '<svg viewBox="0 0 100 92" aria-hidden="true"><rect class="bar" x="5" y="49" width="39" height="8" rx="4"/><rect class="bar-in" x="6.2" y="50.2" height="5.6" rx="2.8" width="0"/><line class="rope" y1="53"/><circle class="knob" cy="53" r=".9"/></svg>'; // 고정 문자열만 넣는다.
+  const word = el('img', 'word'); word.src = IMG.loadText; word.alt = '';
+  const jj = el('img', 'jj'); jj.src = IMG.loadJj; jj.alt = '';
+  art.append(word, jj);
+  const node = el('div', 'ld'); node.setAttribute('role', 'status'); node.setAttribute('aria-label', '보내는 중입니다.');
+  node.append(art);
+  const fill = art.querySelector('.bar-in'), rope = art.querySelector('.rope'), knob = art.querySelector('.knob');
+  const draw = s => {
+    const width = LOAD_BAR_WIDTH * (0.24 + 0.66 * s);
+    const tip = 6.2 + width;
+    const a = LOAD_TILT_DEG * s * Math.PI / 180;
+    const vx = LOAD_HAND.x - LOAD_PIVOT.x, vy = LOAD_HAND.y - LOAD_PIVOT.y;
+    fill.setAttribute('width', width.toFixed(2));
+    knob.setAttribute('cx', tip.toFixed(2));
+    rope.setAttribute('x1', tip.toFixed(2));
+    rope.setAttribute('x2', (LOAD_PIVOT.x + vx * Math.cos(a) - vy * Math.sin(a)).toFixed(2));
+    rope.setAttribute('y2', (LOAD_PIVOT.y + vx * Math.sin(a) + vy * Math.cos(a)).toFixed(2));
+    jj.style.transform = 'rotate(' + (LOAD_TILT_DEG * s).toFixed(2) + 'deg)';
+  };
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(0.6); return node; }
+  draw(0);
+  const tick = now => {
+    if (!node.isConnected) return; // 화면에서 빠지면 멈춘다.
+    draw((1 - Math.cos(2 * Math.PI * now / LOAD_CYCLE_MS)) / 2);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(() => requestAnimationFrame(tick));
+  return node;
+}
+
 function storageGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
 function storageSet(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
 
@@ -199,8 +304,13 @@ function el(tag, cls, text){
 function renderIntro(){
   topBar.hidden = true;
   stage.textContent = '';
+  stage.classList.add('cover');
+  setChar();
   if (!ENDPOINT_URL) stage.append(el('div', 'notice', '미리보기입니다. 끝까지 눌러 볼 수 있지만 답은 저장되지 않아요.'));
-  stage.append(el('h1', '', '전주대 캐릭터 계정, 어떻게 만들면 좋을까요?'));
+  /* 첫인상 문항이 끝나기 전이라 표지에 이름·동물을 쓰지 않는다 */
+  const title = el('h1', '', '전주대 ');
+  title.append(el('span', '', '캐릭터 계정'), document.createTextNode(','), el('br'), document.createTextNode('어떻게 만들면 좋을까요?'));
+  stage.append(title);
   stage.append(el('p', 'hint', '여러분 의견을 듣고 싶어요. 정답은 없으니 느낌대로 골라 주세요.'));
   const ul = el('ul', 'info');
   ['약 3분, 질문 ' + QUESTIONS.length + '개예요', '이름·학번·연락처를 묻지 않는 익명 설문이에요', '답은 통계로만 계정 기획에 써요'].forEach(t => ul.append(el('li', '', t)));
@@ -215,11 +325,14 @@ function renderIntro(){
 function renderAlready(){
   topBar.hidden = true;
   stage.textContent = '';
+  setChar();
   stage.append(el('h1', '', '이미 참여해 주셨어요.'), el('p', 'hint', '고마워요. 이 기기에서는 한 번만 답할 수 있어요.'));
 }
 
 function show(i){
   idx = i;
+  stage.classList.remove('cover');
+  setTug(i / (QUESTIONS.length - 1));
   topBar.hidden = false;
   document.getElementById('fill').style.width = ((i + 1) / QUESTIONS.length * 100) + '%';
   document.getElementById('count').textContent = (i + 1) + ' / ' + QUESTIONS.length;
@@ -376,8 +489,11 @@ function submit(){
   if (!ENDPOINT_URL) return renderDone();
   sending = true;
   const go = document.getElementById('send'), skip = document.getElementById('skip'), err = document.getElementById('err');
+  const loader = loaderNode();
+  document.body.append(loader);
   const fail = msg => {
     sending = false;
+    loader.remove();
     if (err) err.textContent = msg;
     [go, skip].forEach(b => { if (b) b.disabled = false; });
   };
@@ -386,7 +502,7 @@ function submit(){
   fetch(ENDPOINT_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify(body) })
     .then(r => r.json())
     .then(res => {
-      if (res.ok) { sending = false; if (!TEST) storageSet(DONE_KEY, '1'); return renderDone(); }
+      if (res.ok) { sending = false; loader.remove(); if (!TEST) storageSet(DONE_KEY, '1'); return renderDone(); }
       fail(res.error === 'closed' ? '설문이 마감되었어요. 참여해 주셔서 고마워요.' : '저장하지 못했어요. 다시 눌러 주세요.');
     })
     .catch(() => fail('연결이 불안정해요. 답은 그대로 있으니 다시 눌러 주세요.'));
@@ -395,10 +511,8 @@ function submit(){
 function renderDone(){
   topBar.hidden = true;
   stage.textContent = '';
-  const plate = el('div', 'plate');
-  const im = el('img'); im.src = IMG.jey; im.alt = '제이제이';
-  plate.append(im);
-  stage.append(plate, el('h1', '', '고마워요. 잘 반영할게요.'), el('p', 'hint', '아, 그리고 곰 아니고 백마입니다.'));
+  setChar();
+  stage.append(el('h1', '', '고마워요. 잘 반영할게요.'), el('p', 'hint', '아, 그리고 곰 아니고 백마입니다.'));
   const foot = el('div', 'foot');
   const a = el('a', 'primary link', '@jeyjey.jju 둘러보기');
   a.href = 'https://www.instagram.com/jeyjey.jju/'; a.target = '_blank'; a.rel = 'noopener';
@@ -407,6 +521,8 @@ function renderDone(){
 }
 
 document.getElementById('back').onclick = () => { if (idx > 0) show(idx - 1); else { idx = -1; renderIntro(); } };
+window.addEventListener('resize', fitChar);
+new ResizeObserver(fitChar).observe(stage);
 
 if (!TEST && ENDPOINT_URL && storageGet(DONE_KEY)) renderAlready();
 else renderIntro();
